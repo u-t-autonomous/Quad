@@ -11,6 +11,7 @@
 #include "kalman.h"
 
 extern qcontrol_defs::PVA PVA_quadVicon, PVA_RefJoy;
+extern qcontrol_defs::PVA PVA_RefClient;
 
 //Events and mutexes
 extern neosmart_event_t e_buttonX, e_buttonY, e_buttonA, e_buttonB;
@@ -24,7 +25,9 @@ extern pthread_mutex_t Contr_Input_Mutex;
 extern pthread_mutex_t stateMachine_Mutex;
 extern pthread_mutex_t PVA_Vicon_Mutex;
 extern pthread_mutex_t ROS_Mutex;
+extern pthread_mutex_t posRefClient_Mutex;
 extern pthread_mutex_t posRefJoy_Mutex;
+
 
 //Global variables
 extern float ThrustJoy;

@@ -46,7 +46,7 @@ char *rosSrvrIp;
 qcontrol_defs::PVA PVA_quadVicon;
 qcontrol_defs::PVA PVA_quadKalman;
 qcontrol_defs::PVA PVA_RefJoy;
-
+qcontrol_defs::PVA PVA_RefClient;
 //Events and mutexes
 neosmart_event_t e_Key1, e_Key2, e_Key3, e_Key4, e_Key5, e_Key6, e_Key7, e_Key8, e_Key9, e_KeyESC;
 // neosmart_event_t e_ButtonLB, e_ButtonRB;

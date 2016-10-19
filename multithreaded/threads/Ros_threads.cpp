@@ -1,5 +1,4 @@
 
-
 #include "threads/Ros_threads.h"
 
 Vec3 RPY_Vicon;
@@ -15,6 +14,40 @@ int ButtonLB = 0;
 int ButtonRB = 0;
 double SamplingTime = 1.0/20.0; //20Hz
 
+void handle_client_msg(const qcontrol_defs::PVA& msg){
+
+	int localCurrentState;
+
+	pthread_mutex_lock(&PVA_Vicon_Mutex);
+		localPVA_quadVicon = PVA_quadVicon;
+	pthread_mutex_unlock(&PVA_Vicon_Mutex);
+
+	pthread_mutex_lock(&stateMachine_Mutex);
+		localCurrentState = currentState;
+	pthread_mutex_unlock(&stateMachine_Mutex);
+
+	if(localCurrentState == POSITION_CLIENT_MODE){
+		// pthread_mutex_lock(&ThrustJoy_Mutex);
+		// 	ThrustJoy = msg.axes[1] * maxThrust_AttMode;
+		// pthread_mutex_unlock(&ThrustJoy_Mutex);
+		pthread_mutex_lock(&posRefClient_Mutex);	
+			PVA_RefClient.pos.position.x = msg.pos.position.x; //20hz
+			PVA_RefClient.pos.position.y = msg.pos.position.y;
+			PVA_RefClient.pos.position.z = msg.pos.position.z;
+			PVA_RefClient.vel.linear.x = msg.vel.linear.x;
+			PVA_RefClient.vel.linear.y = msg.vel.linear.y;
+			PVA_RefClient.vel.linear.z = msg.vel.linear.z;
+	  	pthread_mutex_unlock(&posRefClient_Mutex);	
+	}
+	else{
+			PVA_RefClient.pos.position.x = localPVA_quadVicon.pos.position.x; //why is this not protected? shouldn't it be local?
+			PVA_RefClient.pos.position.y = localPVA_quadVicon.pos.position.y; //why is this not protected?
+			PVA_RefClient.pos.position.z = localPVA_quadVicon.pos.position.z; //why is this not protected?
+			PVA_RefClient.vel.linear.x = 0;
+			PVA_RefClient.vel.linear.y = 0;
+			PVA_RefClient.vel.linear.z = 0;
+	}
+}
 
 void handle_mp_joy_msg(const sensor_msgs::Joy& msg){
 	float yaw_ctr_pos, yaw_ctr_neg;
@@ -123,9 +156,9 @@ void handle_mp_joy_msg(const sensor_msgs::Joy& msg){
 	  	pthread_mutex_unlock(&posRefJoy_Mutex);	
 	}
 	else{
-			PVA_RefJoy.pos.position.x = PVA_quadVicon.pos.position.x;
-			PVA_RefJoy.pos.position.y = PVA_quadVicon.pos.position.y;
-			PVA_RefJoy.pos.position.z = PVA_quadVicon.pos.position.z;
+			PVA_RefJoy.pos.position.x = localPVA_quadVicon.pos.position.x; // why is this not protected? shouldn't it be local?
+			PVA_RefJoy.pos.position.y = localPVA_quadVicon.pos.position.y; // same here?
+			PVA_RefJoy.pos.position.z = localPVA_quadVicon.pos.position.z; // and here?
 			PVA_RefJoy.vel.linear.x = 0;
 			PVA_RefJoy.vel.linear.y = 0;
 			PVA_RefJoy.vel.linear.z = 0;
@@ -193,7 +226,6 @@ void handle_mp_joy_msg(const sensor_msgs::Joy& msg){
 	ButtonY = msg.buttons[3];
 	// ButtonLB = msg.buttons[4];
 	// ButtonRB = msg.buttons[5];
-
 }
 
 void handle_Vicon(const geometry_msgs::TransformStamped& msg){

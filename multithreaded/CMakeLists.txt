@@ -1,5 +1,6 @@
 cmake_minimum_required (VERSION 2.6)
 project(nikipilot)
+SET(CMAKE_MODULE_PATH /home/sahabi/eigen-eigen-b9cd8366d4e8/cmake)
 find_package(Eigen3 REQUIRED)
 SET(CMAKE_C_COMPILER /usr/bin/arm-linux-gnueabi-gcc)
 SET(CMAKE_CXX_COMPILER /usr/bin/arm-linux-gnueabi-g++) 

@@ -15,6 +15,7 @@ using namespace neosmart;
 #define POSITION_JOY_MODE 4
 #define POSITION_ROS_MODE 5
 #define TERMINATE 6
+#define POSITION_CLIENT_MODE 7
 
 //Define states for Yaw sources
 #define _IMU 0

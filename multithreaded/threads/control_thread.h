@@ -30,7 +30,8 @@ extern pthread_mutex_t IMU_Mutex;	//protect IMU data
 extern pthread_mutex_t PCA_Mutex;
 extern pthread_mutex_t PID_Mutex;
 extern pthread_mutex_t PVA_Vicon_Mutex;
-extern pthread_mutex_t posRefJoy_Mutex;
+extern pthread_mutex_t posRefJoy_Mutexa;
+extern pthread_mutex_t posRefClient_Mutex;
 extern pthread_mutex_t ThrustPosControl_Mutex;
 extern pthread_mutex_t PVA_Kalman_Mutex;
 

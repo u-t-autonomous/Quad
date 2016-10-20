@@ -63,6 +63,7 @@ pthread_mutex_t PCA_Mutex;
 pthread_mutex_t ThrustJoy_Mutex;
 pthread_mutex_t ThrustPosControl_Mutex;
 pthread_mutex_t attRefJoy_Mutex, posRefJoy_Mutex;
+pthread_mutex_t posRefClient_Mutex;
 pthread_mutex_t attRefPosControl_Mutex;
 pthread_mutex_t Contr_Input_Mutex;
 pthread_mutex_t PID_Mutex;
@@ -217,6 +218,17 @@ void *rosPublisherTask(void *threadID){
 			pthread_mutex_lock(&posRefJoy_Mutex);	
 				PVA_PVARef.pos.position = PVA_RefJoy.pos.position;
 		  	pthread_mutex_unlock(&posRefJoy_Mutex);	
+		}
+		else if(localCurrentState == POSITION_CLIENT_MODE){
+			pthread_mutex_lock(&attRefPosControl_Mutex);
+				RPY = Quat2RPY(Rot2quat(Rdes_PosControl));
+			pthread_mutex_unlock(&attRefPosControl_Mutex);
+			RPY_Ref.x = RPY.v[0];
+			RPY_Ref.y = RPY.v[1];
+			RPY_Ref.z = RPY.v[2];
+			pthread_mutex_lock(&posRefClient_Mutex);	
+				PVA_PVARef.pos.position = PVA_RefClient.pos.position;
+		  	pthread_mutex_unlock(&posRefClient_Mutex);	
 		}
 		else{
 			RPY_Ref.x = 0;
@@ -464,6 +476,7 @@ int main(int argc, char *argv[])
 	pthread_mutex_init(&PVA_Vicon_Mutex, NULL);
 	pthread_mutex_init(&ROS_Mutex, NULL);
 	pthread_mutex_init(&posRefJoy_Mutex, NULL);
+	pthread_mutex_init(&posRefClient_Mutex, NULL);
 	pthread_mutex_init(&ThrustPosControl_Mutex, NULL);
 	pthread_mutex_init(&YawSource_Mutex, NULL);
 
@@ -645,6 +658,7 @@ int main(int argc, char *argv[])
 	pthread_mutex_destroy(&PVA_Vicon_Mutex);
 	pthread_mutex_destroy(&ROS_Mutex);
 	pthread_mutex_destroy(&posRefJoy_Mutex);
+	pthread_mutex_destroy(&posRefClient_Mutex);
 	pthread_mutex_destroy(&ThrustPosControl_Mutex);
 	pthread_mutex_destroy(&YawSource_Mutex);
 

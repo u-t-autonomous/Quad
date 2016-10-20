@@ -46,4 +46,6 @@ extern int threadCount;		//Counts active threads
 
 void handle_mp_joy_msg(const sensor_msgs::Joy& msg);
 
+void handle_client_pva_msg(const qcontrol_defs::PVA& msg);
+
 void handle_Vicon(const geometry_msgs::TransformStamped& msg);

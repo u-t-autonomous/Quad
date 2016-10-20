@@ -105,7 +105,7 @@ void *AttControl_Task(void *threadID){
 				localThrust = ThrustPosControl;
 			pthread_mutex_unlock(&ThrustPosControl_Mutex);
 		}
-		else if (localCurrentState == POSITION_CLIENT_MODE){
+		else if (localCurrentState == POSITION_ROS_MODE){
 			pthread_mutex_lock(&attRefPosControl_Mutex);
 				Rdes = Rdes_PosControl;
 			pthread_mutex_unlock(&attRefPosControl_Mutex);
@@ -328,7 +328,7 @@ void *PosControl_Task(void *threadID){
 			updateErrorPID(&PID_pos, feedForward, e_Pos, e_Vel, dt);
 
 			//Dont integrate integrator if not in POS_Control mode
-			if (localCurrentState != POSITION_JOY_MODE || localCurrentState != POSITION_CLIENT_MODE){
+			if (localCurrentState != POSITION_JOY_MODE || localCurrentState != POSITION_ROS_MODE){
 				resetIntegralErrorPID(&PID_pos);
 			}
 

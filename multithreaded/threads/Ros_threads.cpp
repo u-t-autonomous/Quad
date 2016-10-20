@@ -14,7 +14,7 @@ int ButtonLB = 0;
 int ButtonRB = 0;
 double SamplingTime = 1.0/20.0; //20Hz
 
-void handle_client_msg(const qcontrol_defs::PVA& msg){
+void handle_client_pva_msg(const qcontrol_defs::PVA& msg){
 
 	int localCurrentState;
 
@@ -26,7 +26,7 @@ void handle_client_msg(const qcontrol_defs::PVA& msg){
 		localCurrentState = currentState;
 	pthread_mutex_unlock(&stateMachine_Mutex);
 
-	if(localCurrentState == POSITION_CLIENT_MODE){
+	if(localCurrentState == POSITION_ROS_MODE){
 		// pthread_mutex_lock(&ThrustJoy_Mutex);
 		// 	ThrustJoy = msg.axes[1] * maxThrust_AttMode;
 		// pthread_mutex_unlock(&ThrustJoy_Mutex);
@@ -40,12 +40,14 @@ void handle_client_msg(const qcontrol_defs::PVA& msg){
 	  	pthread_mutex_unlock(&posRefClient_Mutex);	
 	}
 	else{
-			PVA_RefClient.pos.position.x = localPVA_quadVicon.pos.position.x; //why is this not protected? shouldn't it be local?
-			PVA_RefClient.pos.position.y = localPVA_quadVicon.pos.position.y; //why is this not protected?
-			PVA_RefClient.pos.position.z = localPVA_quadVicon.pos.position.z; //why is this not protected?
+		pthread_mutex_lock(&posRefClient_Mutex);	
+			PVA_RefClient.pos.position.x = localPVA_quadVicon.pos.position.x;
+			PVA_RefClient.pos.position.y = localPVA_quadVicon.pos.position.y;
+			PVA_RefClient.pos.position.z = localPVA_quadVicon.pos.position.z;
 			PVA_RefClient.vel.linear.x = 0;
 			PVA_RefClient.vel.linear.y = 0;
 			PVA_RefClient.vel.linear.z = 0;
+		pthread_mutex_unlock(&posRefClient_Mutex);	
 	}
 }
 
@@ -156,12 +158,14 @@ void handle_mp_joy_msg(const sensor_msgs::Joy& msg){
 	  	pthread_mutex_unlock(&posRefJoy_Mutex);	
 	}
 	else{
+		pthread_mutex_lock(&posRefJoy_Mutex);	
 			PVA_RefJoy.pos.position.x = localPVA_quadVicon.pos.position.x; // why is this not protected? shouldn't it be local?
 			PVA_RefJoy.pos.position.y = localPVA_quadVicon.pos.position.y; // same here?
 			PVA_RefJoy.pos.position.z = localPVA_quadVicon.pos.position.z; // and here?
 			PVA_RefJoy.vel.linear.x = 0;
 			PVA_RefJoy.vel.linear.y = 0;
 			PVA_RefJoy.vel.linear.z = 0;
+		pthread_mutex_unlock(&posRefJoy_Mutex);	
 	}
 
 	//Manage yaw reference in attitude and position control modes

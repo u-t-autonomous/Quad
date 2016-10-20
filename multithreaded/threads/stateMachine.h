@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "pevents/pevents.h"	//Includes event handling (https://github.com/NeoSmart/PEvents)
+#include "rosserial/qcontrol_defs/PVA.h"
 
 using namespace neosmart;
 
@@ -15,7 +16,6 @@ using namespace neosmart;
 #define POSITION_JOY_MODE 4
 #define POSITION_ROS_MODE 5
 #define TERMINATE 6
-#define POSITION_CLIENT_MODE 7
 
 //Define states for Yaw sources
 #define _IMU 0
@@ -26,8 +26,10 @@ extern neosmart_event_t e_buttonX, e_buttonY, e_buttonA, e_buttonB;
 extern neosmart_event_t e_SwitchYawSource;
 extern pthread_mutex_t stateMachine_Mutex;
 extern pthread_mutex_t YawSource_Mutex;
+extern pthread_mutex_t posRefClient_Mutex;
 extern int currentState;
 extern int YawSource;
 extern int threadCount;
+extern qcontrol_defs::PVA PVA_RefClient;
 
 void *StateMachineTask(void *threadID);

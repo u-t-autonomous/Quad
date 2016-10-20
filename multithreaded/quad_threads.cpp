@@ -99,7 +99,10 @@ void *rosSpinTask(void *threadID){
 
 	//ros joy subscriber
 	ros::Subscriber<sensor_msgs::Joy> sub_mp_joy("/joy", handle_mp_joy_msg);
-	_nh.subscribe(sub_mp_joy);	
+	_nh.subscribe(sub_mp_joy);
+
+	ros::Subscriber<qcontrol_defs::PVA> sub_ros_pva("/pva", handle_client_pva_msg);
+	_nh.subscribe(sub_ros_pva);	
 
   	ros::Subscriber<geometry_msgs::TransformStamped> sub_tform("/vicon/Quad7/Quad7", handle_Vicon);
   	_nh.subscribe(sub_tform);
@@ -219,7 +222,7 @@ void *rosPublisherTask(void *threadID){
 				PVA_PVARef.pos.position = PVA_RefJoy.pos.position;
 		  	pthread_mutex_unlock(&posRefJoy_Mutex);	
 		}
-		else if(localCurrentState == POSITION_CLIENT_MODE){
+		else if(localCurrentState == POSITION_ROS_MODE){
 			pthread_mutex_lock(&attRefPosControl_Mutex);
 				RPY = Quat2RPY(Rot2quat(Rdes_PosControl));
 			pthread_mutex_unlock(&attRefPosControl_Mutex);

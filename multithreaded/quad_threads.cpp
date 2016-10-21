@@ -101,8 +101,8 @@ void *rosSpinTask(void *threadID){
 	ros::Subscriber<sensor_msgs::Joy> sub_mp_joy("/joy", handle_mp_joy_msg);
 	_nh.subscribe(sub_mp_joy);
 
-	ros::Subscriber<qcontrol_defs::PVA> sub_ros_pva("/pva", handle_client_pva_msg);
-	_nh.subscribe(sub_ros_pva);	
+	// ros::Subscriber<qcontrol_defs::PVA> sub_ros_pva("/pva", handle_client_pva_msg);
+	// _nh.subscribe(sub_ros_pva);	
 
   	ros::Subscriber<geometry_msgs::TransformStamped> sub_tform("/vicon/Quad7/Quad7", handle_Vicon);
   	_nh.subscribe(sub_tform);
